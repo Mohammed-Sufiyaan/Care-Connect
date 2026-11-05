@@ -1,17 +1,17 @@
 export const STATS = [
-  { value: "349,728", label: "US liposuctions in 2024", source: "ASPS 2024 Procedural Statistics" },
-  { value: "171,064", label: "US tummy tucks in 2024", source: "ASPS 2024 Procedural Statistics" },
-  { value: "$18,211", label: "Average cost to treat one complication from cosmetic surgery abroad", source: "ASPS / Plastic and Reconstructive Surgery, 2017" },
-  { value: "289", label: "Plastic surgeons in Ontario, 66.8% in Toronto & Central Ontario", source: "Ontario Plastic Surgery Workforce Study, 2026" },
-  { value: "−11.4%", label: "Drop in liposuction demand in 2025 as GLP-1 drugs spread, while tummy tucks and skin removal grew", source: "ASPS 2025 trend reporting" },
-  { value: "10 days", label: "Minimum the CDC advises before flying after abdominal surgery", source: "CDC Travelers' Health — Medical Tourism" },
+  { value: "349,728", label: "US liposuctions in 2024", source: "ASPS 2024 Procedural Statistics", url: "https://plasticsurgerypractice.com/?p=122107" },
+  { value: "171,064", label: "US tummy tucks in 2024", source: "ASPS 2024 Procedural Statistics", url: "https://plasticsurgerypractice.com/?p=122107" },
+  { value: "$18,211", label: "Average cost to treat one complication from cosmetic surgery abroad", source: "ASPS / Plastic and Reconstructive Surgery, 2017", url: "https://www.plasticsurgery.org/news/press-releases/medical-tourism-for-cosmetic-surgery-high-risk-of-complications-high-costs-for-treatment" },
+  { value: "289", label: "Plastic surgeons in Ontario, 66.8% in Toronto & Central Ontario", source: "Ontario Plastic Surgery Workforce Study, 2026", url: "" },
+  { value: "−11.4%", label: "Drop in liposuction demand in 2025 as GLP-1 drugs spread, while tummy tucks and skin removal grew", source: "The National, October 2026", url: "https://www.thenationalnews.com/news/uae/2026/10/28/how-weight-loss-drugs-are-reshaping-demand-for-cosmetic-surgery/" },
+  { value: "10 days", label: "Minimum the CDC advises before flying after abdominal surgery", source: "CDC Travelers' Health — Medical Tourism", url: "https://wwwnc.cdc.gov/travel/page/medical-tourism" },
 ];
 
 export const PRICES = [
-  { market: "Canada", price: "CAD $8,500–$15,000", source: "Published Canadian clinic price ranges" },
-  { market: "United States", price: "USD $8,000–$13,500 (surgeon fee)", source: "ASPS 2024" },
-  { market: "Turkey", price: "USD $1,500–$5,500", source: "Published medical tourism price ranges" },
-  { market: "Mexico", price: "USD $3,000–$5,000", source: "Published medical tourism price ranges" },
+  { market: "Canada", price: "CAD $8,500–$15,000", source: "iFinance Canada, 2025", url: "https://ifinancecanada.com/how-much-does-a-tummy-tuck-cost-in-canada-heres-what-to-expect-and-how-to-pay-over-time/" },
+  { market: "United States", price: "USD $8,000–$13,500 (surgeon fee)", source: "ASPS 2024", url: "https://www.plasticsurgery.org/documents/news/statistics/2024/cosmetic-procedures-average-cost-2024.pdf" },
+  { market: "Turkey", price: "USD $1,500–$5,500", source: "Bookimed", url: "https://health.bookimed.com/article/best-countries-for-a-tummy-tuck" },
+  { market: "Mexico", price: "USD $3,000–$5,000", source: "Bookimed", url: "https://health.bookimed.com/article/best-countries-for-a-tummy-tuck" },
 ];
 
 export const ASSUMPTIONS = [

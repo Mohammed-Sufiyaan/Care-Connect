@@ -25,7 +25,7 @@ function Sources() {
           <div key={s.label} className="grid gap-1 p-4 md:grid-cols-[120px_1fr_260px] md:gap-4">
             <span className="font-display font-bold text-primary">{s.value}</span>
             <span className="text-sm">{s.label}</span>
-            <span className="text-sm text-muted-foreground">{s.source}</span>
+            <span className="text-sm text-muted-foreground">{s.url ? <a href={s.url} target="_blank" rel="noopener noreferrer" className="underline decoration-border underline-offset-2 hover:text-primary">{s.source}</a> : s.source}</span>
           </div>
         ))}
       </div>
@@ -35,7 +35,7 @@ function Sources() {
           <div key={p.market} className="grid gap-1 p-4 md:grid-cols-[120px_1fr_260px] md:gap-4">
             <span className="font-medium">{p.market}</span>
             <span className="text-sm">{p.price}</span>
-            <span className="text-sm text-muted-foreground">{p.source}</span>
+            <span className="text-sm text-muted-foreground">{p.url ? <a href={p.url} target="_blank" rel="noopener noreferrer" className="underline decoration-border underline-offset-2 hover:text-primary">{p.source}</a> : p.source}</span>
           </div>
         ))}
       </div>
