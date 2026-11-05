@@ -1,15 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { Bar, BarChart, CartesianGrid, Legend, PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, RadarChart, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { Loader2, Sparkles } from "lucide-react";
-import { simulatePolicy, type SimResult } from "@/lib/simulate.functions";
+import { simulatePolicy, type SimResult } from "@/lib/simulate";
 
 export const Route = createFileRoute("/simulator")({
   head: () => ({
     meta: [
       { title: "Policy Simulator — Canada CareConnect" },
-      { name: "description", content: "AI stakeholder impact simulator for Canada's medical tourism policies." },
+      { name: "description", content: "Stakeholder impact simulator for Canada's medical tourism policies." },
       { property: "og:title", content: "Policy Simulator — Canada CareConnect" },
       { property: "og:description", content: "Score short- and long-term impacts of each policy on every stakeholder." },
       { property: "og:type", content: "website" },
@@ -28,7 +27,7 @@ const PRESETS: Record<string, string> = {
 const STAKEHOLDERS = ["International patients", "Canadian patients", "Private clinics", "Public hospitals", "Surgeons and nurses", "Provincial governments", "Federal government", "Hotels and tourism"];
 
 function Simulator() {
-  const run = useServerFn(simulatePolicy);
+  const run = simulatePolicy;
   const [preset, setPreset] = useState("Full strategy");
   const [policy, setPolicy] = useState(PRESETS["Full strategy"]);
   const [sel, setSel] = useState<string[]>(STAKEHOLDERS);
@@ -48,12 +47,12 @@ function Simulator() {
   };
 
   const chip = (on: boolean) => `rounded-full border px-3 py-1.5 text-sm transition-colors ${on ? "border-primary bg-primary-soft text-accent-foreground" : "bg-card text-muted-foreground"}`;
-  const short = (s: string) => s.replace(" and ", " & ").replace("International", "Intl.").replace("governments", "gov.").replace("government", "gov.");
+  const short = (s: string) => s.replace(" and ", " & ").replace("International", "Intl.").replace("Provincial governments", "Provinces").replace("Federal government", "Federal").replace("Hotels & tourism", "Tourism").replace("Hotels and tourism", "Tourism");
 
   return (
     <div className="mx-auto max-w-6xl px-5 py-14">
       <h1 className="text-3xl font-bold md:text-4xl">Policy simulator</h1>
-      <p className="mt-2 text-muted-foreground">AI-estimated stakeholder impacts. Scores range from −10 to +10 and are illustrative.</p>
+      <p className="mt-2 text-muted-foreground">Stakeholder impacts for each policy. Scores range from −10 to +10 and are illustrative.</p>
 
       <div className="mt-8 grid gap-6 lg:grid-cols-[380px_1fr]">
         <div className="space-y-6 rounded-xl border bg-card p-6 shadow-soft">
@@ -123,7 +122,7 @@ function Simulator() {
                 <div className="rounded-xl border bg-card p-5 shadow-soft">
                   <h3 className="mb-2 text-sm font-semibold">Long-term impact profile</h3>
                   <ResponsiveContainer width="100%" height={300}>
-                    <RadarChart data={res.impacts.map((i) => ({ name: short(i.stakeholder), v: i.longTerm }))}>
+                    <RadarChart outerRadius="62%" margin={{ top: 8, right: 36, bottom: 8, left: 36 }} data={res.impacts.map((i) => ({ name: short(i.stakeholder), v: i.longTerm }))}>
                       <PolarGrid stroke="var(--border)" />
                       <PolarAngleAxis dataKey="name" fontSize={10} />
                       <PolarRadiusAxis domain={[-10, 10]} tick={false} axisLine={false} />

@@ -1,29 +1,34 @@
-# Welcome to your Lovable project
+# Canada CareConnect
 
-This project was built with [Lovable](https://lovable.dev).
+Interactive strategy site for our UEC Advanced Case Competition proposal: making Canada the trusted destination for post-weight-loss body contouring.
 
-## Build with Lovable
+**Live site:** https://mohammed-sufiyaan.github.io/Care-Connect/
 
-Open your project in the [Lovable editor](https://lovable.dev) and keep building.
+## The strategy: Connect → Expand → Reinvest
 
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: connect the project to GitHub and every change made in Lovable is committed straight to your repository.
-- **Full ownership**: this code is yours. Push to your repository and your changes sync back into Lovable, ready for your next prompt.
+1. **Canada CareConnect** (0–12 months): trusted provider certification, one patient-coordination platform and a recovery network. Toronto pilot with 3–5 clinics.
+2. **Healthcare Capacity Accelerator** (years 1–5): incentives paid only for proven new staff and operating-room capacity, plus international talent recruitment.
+3. **Canada Health Dividend** (years 2–5): a proposed 5% contribution on international procedure revenue, reinvested in Canadian healthcare.
 
-## Development
+## Pages
 
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+- **Strategy**: the problem, the three policies and the key judge question.
+- **Network Map**: real Canadian geography with clickable hub cities, US source markets, patient flows, a pilot gate and readiness scores.
+- **Policy Simulator**: short- and long-term impact of each policy on eight stakeholder groups, with pros, cons and risks.
+- **Economic Model**: five-year projection of procedures, revenue and the Health Dividend.
+- **Sources**: every statistic with its source.
+
+## Run locally
 
 ```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
+npm install   # or: bun install
 npm run dev
 ```
 
-## Built with
+## Deploy
 
-- TanStack Start
-- TypeScript
-- React
-- Tailwind CSS
+`npm run build` produces a static site in `dist/` (including a `404.html` so deep links work). The `gh-pages` branch holds the built site; GitHub Pages serves it from that branch.
+
+## Credits
+
+Map boundaries: Natural Earth via [sane-topojson](https://github.com/plotly/sane-topojson) (MIT). Charts: Recharts. All projections, scores and simulations are illustrative and not medical advice.
