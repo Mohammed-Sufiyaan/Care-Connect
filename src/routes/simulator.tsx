@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Bar, BarChart, CartesianGrid, Legend, PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, RadarChart, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { Loader2, Sparkles } from "lucide-react";
 import { simulatePolicy, type SimResult } from "@/lib/simulate";
+import { RiskPanel } from "@/components/risk-panel";
 
 export const Route = createFileRoute("/simulator")({
   head: () => ({
@@ -27,6 +28,7 @@ const PRESETS: Record<string, string> = {
 const STAKEHOLDERS = ["International patients", "Canadian patients", "Private clinics", "Public hospitals", "Surgeons and nurses", "Provincial governments", "Federal government", "Hotels and tourism"];
 
 function Simulator() {
+  const [tab, setTab] = useState<"impact" | "risk">("impact");
   const run = simulatePolicy;
   const [preset, setPreset] = useState("Full strategy");
   const [policy, setPolicy] = useState(PRESETS["Full strategy"]);
@@ -52,7 +54,7 @@ function Simulator() {
   return (
     <div className="mx-auto max-w-6xl px-5 py-14">
       <h1 className="text-3xl font-bold md:text-4xl">Policy simulator</h1>
-      <p className="mt-2 text-muted-foreground">Stakeholder impacts for each policy. Scores range from −10 to +10 and are illustrative.</p>
+      <p className="mt-2 text-muted-foreground">Stakeholder impacts, risks and mitigations for each policy. Impact scores range from −10 to +10 and are illustrative.</p>
 
       <div className="mt-8 grid gap-6 lg:grid-cols-[380px_1fr]">
         <div className="space-y-6 rounded-xl border bg-card p-6 shadow-soft">
@@ -93,7 +95,7 @@ function Simulator() {
         <div className="space-y-6">
           {!res && !loading && (
             <div className="grid h-full min-h-64 place-items-center rounded-xl border border-dashed p-10 text-center text-muted-foreground">
-              Choose a policy and run the simulation to see stakeholder impacts.
+              Choose a policy and run the simulation to see stakeholder impacts, risks and mitigations.
             </div>
           )}
           {loading && !res && <div className="grid min-h-64 place-items-center rounded-xl border"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>}
@@ -103,6 +105,14 @@ function Simulator() {
                 <p className="text-xs font-semibold uppercase tracking-widest text-primary">Verdict</p>
                 <p className="mt-1 font-display text-lg font-semibold">{res.verdict}</p>
               </div>
+              <div className="inline-flex gap-1 rounded-lg bg-muted p-1 text-sm" role="tablist">
+                {([["impact", "Stakeholder impact"], ["risk", `Risks & mitigations (${res.register.length})`]] as const).map(([id, label]) => (
+                  <button key={id} role="tab" aria-selected={tab === id} onClick={() => setTab(id)}
+                    className={`rounded-md px-3.5 py-1.5 ${tab === id ? "bg-card font-medium shadow-soft" : "text-muted-foreground hover:text-foreground"}`}>{label}</button>
+                ))}
+              </div>
+              {tab === "risk" && <RiskPanel register={res.register} />}
+              {tab === "impact" && (<>
               <div className="grid gap-6 xl:grid-cols-2">
                 <div className="rounded-xl border bg-card p-5 shadow-soft">
                   <h3 className="mb-2 text-sm font-semibold">Short vs long-term impact</h3>
@@ -131,8 +141,8 @@ function Simulator() {
                   </ResponsiveContainer>
                 </div>
               </div>
-              <div className="grid gap-4 md:grid-cols-3">
-                {([["Pros", res.pros], ["Cons", res.cons], ["Risks", res.risks]] as const).map(([t, l]) => (
+              <div className="grid gap-4 md:grid-cols-2">
+                {([["Pros", res.pros], ["Cons", res.cons]] as const).map(([t, l]) => (
                   <div key={t} className="rounded-xl border bg-card p-5 shadow-soft">
                     <h3 className="text-sm font-semibold">{t}</h3>
                     <ul className="mt-2 space-y-1.5 text-sm text-muted-foreground">{l.map((x) => <li key={x}>• {x}</li>)}</ul>
@@ -152,6 +162,7 @@ function Simulator() {
                   </div>
                 ))}
               </div>
+              </>)}
             </>
           )}
         </div>

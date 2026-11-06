@@ -1,7 +1,17 @@
 // Policy Simulator engine. Runs entirely in the browser (the site is static, hosted on GitHub Pages).
 // Presets return the team's scored stakeholder analysis; custom policies get a keyword-based estimate.
 export type StakeholderImpact = { stakeholder: string; shortTerm: number; longTerm: number; gain: string; concern: string; safeguard: string };
-export type SimResult = { impacts: StakeholderImpact[]; pros: string[]; cons: string[]; risks: string[]; verdict: string };
+export type RiskItem = {
+  risk: string;
+  policy: string;
+  likelihood: number; // 1–5 before mitigation
+  impact: number; // 1–5
+  mitigation: string;
+  trigger: string; // early-warning indicator
+  owner: string;
+  residual: { likelihood: number; impact: number }; // after mitigation
+};
+export type SimResult = { impacts: StakeholderImpact[]; pros: string[]; cons: string[]; risks: string[]; verdict: string; register: RiskItem[] };
 
 type Row = [number, number, string, string, string];
 type Matrix = Record<string, Row>;
@@ -51,6 +61,66 @@ const SUMMARY: Record<string, Omit<SimResult, "impacts">> = {
   full: { verdict: "A credible, staged strategy: prove demand, add capacity, then reinvest, with Canadians protected at each gate.", pros: ["Each stage unlocks only on evidence.", "Adds capacity before adding volume.", "Returns a share of revenue to public care."], cons: ["Slower ramp than a price-led strategy.", "Requires coordination across governments and regulators.", "Early years rely on a small pilot."], risks: ["International demand may disappoint.", "Workforce diversion if safeguards slip.", "GLP-1 shifts the procedure mix faster than planned."] },
 };
 
+
+/* ---------- risk register (from the team's policy document) ---------- */
+type RiskDef = Omit<RiskItem, "likelihood" | "residual"> & { l: number; rl: number; ri: number; strain?: boolean; demand?: boolean };
+const R1 = "Policy 1 · CareConnect", R2 = "Policy 2 · Accelerator", R3 = "Policy 3 · Dividend", RX = "Cross-cutting";
+const RISKS: Record<"careconnect" | "accelerator" | "dividend" | "full", RiskDef[]> = {
+  careconnect: [
+    { risk: "Insufficient international demand", policy: R1, l: 3, impact: 4, rl: 2, ri: 3, demand: true,
+      mitigation: "Start with a small Toronto pilot, test pricing, and sell quality and coordinated recovery rather than price.",
+      trigger: "Inquiry-to-booking conversion below target by month 6", owner: "Ontario government · tourism organizations" },
+    { risk: "Post-operative complications", policy: R1, l: 3, impact: 5, rl: 2, ri: 4, strain: true,
+      mitigation: "Documented recovery plans, emergency transfer protocols, complication insurance, qualified follow-up providers; fly home only after clearance.",
+      trigger: "Complication or emergency-transfer rate above clinical benchmark", owner: "Participating clinics · regulators" },
+    { risk: "Pressure on Canadian healthcare workers", policy: R1, l: 2, impact: 4, rl: 1, ri: 3, strain: true,
+      mitigation: "Monitor participating clinics' staffing and public-system impacts before any expansion.",
+      trigger: "Staff moving from public hospitals to participating clinics", owner: "Ontario government" },
+  ],
+  accelerator: [
+    { risk: "Workforce diverted from public hospitals", policy: R2, l: 3, impact: 5, rl: 2, ri: 3, strain: true,
+      mitigation: "Pay incentives only for verified net new staff and usable capacity; pause expansion if public access worsens.",
+      trigger: "Public hospital retention falls or relevant wait times rise", owner: "Provincial governments" },
+    { risk: "International licensing barriers", policy: R2, l: 4, impact: 3, rl: 3, ri: 2,
+      mitigation: "Coordinate with professional regulators and support credential-assessment pathways; Canadian standards unchanged.",
+      trigger: "Licensing timelines longer than 12 months", owner: "Professional regulators · IRCC" },
+    { risk: "High infrastructure investment costs", policy: R2, l: 3, impact: 4, rl: 2, ri: 3, strain: true,
+      mitigation: "Prioritise private financing, use performance-based incentives, expand gradually and require feasibility assessments.",
+      trigger: "Public incentive cost per unit of added capacity above plan", owner: "Provincial and federal governments" },
+  ],
+  dividend: [
+    { risk: "Reduced international competitiveness", policy: R3, l: 3, impact: 4, rl: 2, ri: 3, strain: true,
+      mitigation: "Test price sensitivity, pilot the contribution with a few clinics, and adjust the rate if bookings fall.",
+      trigger: "Bookings drop or prices rise more than the contribution", owner: "Ontario government" },
+    { risk: "Insufficient dividend revenue", policy: R3, l: 3, impact: 3, rl: 2, ri: 2, demand: true,
+      mitigation: "Tie funding commitments to actual collections and keep forecasts conservative.",
+      trigger: "Collections below forecast for two quarters", owner: "Ontario government" },
+    { risk: "Administrative inefficiency", policy: R3, l: 2, impact: 3, rl: 1, ri: 2,
+      mitigation: "Transparent reporting, minimal collection overhead and independent audits; judge net, not gross, benefit.",
+      trigger: "Administration above 10% of collections", owner: "Independent auditors" },
+    { risk: "Limited impact on wait times", policy: R3, l: 3, impact: 4, rl: 2, ri: 3,
+      mitigation: "Target funds at identified capacity constraints with measurable goals and independent monitoring.",
+      trigger: "Funded projects miss their wait-time targets", owner: "Healthcare institutions" },
+  ],
+  full: [],
+};
+RISKS.full = [
+  ...RISKS.careconnect.slice(0, 2),
+  RISKS.accelerator[0]!, RISKS.accelerator[1]!,
+  RISKS.dividend[0]!, RISKS.dividend[3]!,
+  { risk: "GLP-1 shifts the procedure mix", policy: RX, l: 3, impact: 3, rl: 2, ri: 2, demand: true,
+    mitigation: "Position the program around post-weight-loss skin removal and tummy tucks, where demand is growing.",
+    trigger: "Liposuction share of bookings keeps falling", owner: "Participating clinics · CareConnect" },
+];
+
+function buildRegister(key: keyof typeof RISKS, intensity: "low" | "medium" | "high"): RiskItem[] {
+  const c = (n: number) => Math.max(1, Math.min(5, n));
+  return RISKS[key].map(({ l, rl, ri, strain, demand, ...r }) => {
+    const shift = intensity === "high" ? (strain ? 1 : 0) : intensity === "low" ? (strain ? -1 : demand ? 1 : 0) : 0;
+    return { ...r, likelihood: c(l + shift), residual: { likelihood: c(rl + shift), impact: ri } };
+  }).sort((a, b) => b.likelihood * b.impact - a.likelihood * a.impact);
+}
+
 function pick(policy: string): keyof typeof SUMMARY | null {
   const p = policy.toLowerCase();
   if (p.startsWith("full")) return "full";
@@ -84,5 +154,5 @@ export async function simulatePolicy({ data }: { data: { policy: string; stakeho
   });
   const sum = SUMMARY[key]!;
   const note = preset ? "" : " (Estimated from the closest of our three policies, based on keywords in your description.)";
-  return { result: { impacts, pros: sum.pros, cons: sum.cons, risks: sum.risks, verdict: sum.verdict + note } };
+  return { result: { impacts, pros: sum.pros, cons: sum.cons, risks: sum.risks, verdict: sum.verdict + note, register: buildRegister(key, data.intensity) } };
 }
