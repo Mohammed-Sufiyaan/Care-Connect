@@ -109,3 +109,36 @@
     stroke-dashoffset: -28;
   }
 }
+
+/* ---------- Advisor robot ---------- */
+.robot { overflow: visible; }
+.robot-shell { fill: var(--card); stroke: var(--primary); stroke-width: 4; }
+.robot-face { fill: oklch(0.32 0.05 200); }
+.robot-eye { fill: oklch(0.88 0.12 185); transform-box: fill-box; transform-origin: center; animation: robot-blink 4.5s infinite; }
+.robot-glint { fill: #fff; opacity: 0.85; }
+.robot-mouth { fill: none; stroke: oklch(0.88 0.12 185); stroke-width: 4; stroke-linecap: round; }
+.robot-cheek { fill: oklch(0.75 0.12 20); opacity: 0.55; }
+.robot-accent { fill: var(--primary); }
+.robot-line { stroke: var(--primary); stroke-width: 4; stroke-linecap: round; }
+.robot-antenna { fill: oklch(0.75 0.15 70); }
+.robot-badge { fill: var(--primary); }
+.robot-shadow { fill: oklch(0.2 0.02 220 / 10%); transform-box: fill-box; transform-origin: center; animation: robot-shadow 3.2s ease-in-out infinite; }
+.robot-body { animation: robot-float 3.2s ease-in-out infinite; }
+.robot-wave { transform-box: fill-box; transform-origin: 50% 12%; animation: robot-wave 2.6s ease-in-out infinite; }
+.robot-dots circle { fill: var(--primary); opacity: 0; }
+.robot--thinking .robot-antenna { animation: robot-pulse 0.8s ease-in-out infinite; }
+.robot--thinking .robot-eyes { animation: robot-scan 1.6s ease-in-out infinite; }
+.robot--thinking .robot-wave { animation: none; }
+.robot--thinking .robot-dots circle { animation: robot-dot 1.2s ease-in-out infinite; }
+.robot--thinking .robot-dots circle:nth-child(2) { animation-delay: 0.2s; }
+.robot--thinking .robot-dots circle:nth-child(3) { animation-delay: 0.4s; }
+@keyframes robot-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+@keyframes robot-shadow { 0%, 100% { transform: scaleX(1); opacity: 1; } 50% { transform: scaleX(0.82); opacity: 0.6; } }
+@keyframes robot-blink { 0%, 92%, 100% { transform: scaleY(1); } 95% { transform: scaleY(0.1); } }
+@keyframes robot-wave { 0%, 60%, 100% { transform: rotate(0deg); } 70% { transform: rotate(-38deg); } 80% { transform: rotate(-18deg); } 90% { transform: rotate(-38deg); } }
+@keyframes robot-pulse { 0%, 100% { fill: oklch(0.75 0.15 70); } 50% { fill: oklch(0.88 0.12 185); } }
+@keyframes robot-scan { 0%, 100% { transform: translateX(-4px); } 50% { transform: translateX(4px); } }
+@keyframes robot-dot { 0%, 100% { opacity: 0.15; } 50% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .robot *, .robot { animation: none !important; }
+}

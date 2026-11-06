@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { ArrowRight, Bot, KeyRound, Loader2, Send, Sparkles, X } from "lucide-react";
+import { ArrowRight, KeyRound, Loader2, Send, Sparkles, X } from "lucide-react";
 import { SUGGESTIONS, answerFromKnowledge, askClaude, getKey, setKey, type ChatMsg } from "@/lib/advisor";
+import { Robot } from "@/components/robot";
 
 type Msg = ChatMsg & { links?: { to: string; label: string }[]; note?: string };
 
@@ -10,7 +11,7 @@ const WELCOME: Msg = {
   content: "Hi, I'm the CareConnect Advisor. Ask me about the strategy, the three policies, the numbers, risks, or planning a patient trip.",
 };
 
-export function AdvisorChat({ compact = false }: { compact?: boolean }) {
+export function AdvisorChat({ compact = false, onBusy }: { compact?: boolean; onBusy?: (busy: boolean) => void }) {
   const [msgs, setMsgs] = useState<Msg[]>([WELCOME]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
@@ -22,6 +23,9 @@ export function AdvisorChat({ compact = false }: { compact?: boolean }) {
   useEffect(() => {
     setKeyState(getKey());
   }, []);
+  useEffect(() => {
+    onBusy?.(busy);
+  }, [busy, onBusy]);
   useEffect(() => {
     end.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }, [msgs, busy]);
@@ -68,7 +72,7 @@ export function AdvisorChat({ compact = false }: { compact?: boolean }) {
     <div className={`flex h-full flex-col ${compact ? "" : "rounded-xl border bg-card shadow-soft"}`}>
       <div className="flex items-center justify-between gap-2 border-b px-4 py-3">
         <div className="flex items-center gap-2.5">
-          <span className="grid h-8 w-8 place-items-center rounded-lg bg-primary-soft text-primary"><Bot className="h-4 w-4" /></span>
+          <span className="grid h-9 w-9 place-items-center rounded-lg bg-primary-soft"><Robot size={30} thinking={busy} wave={false} /></span>
           <div>
             <p className="text-sm font-semibold leading-tight">CareConnect Advisor</p>
             <p className="text-xs text-muted-foreground">{key ? "Powered by Claude" : "Answers from our strategy"}</p>
@@ -112,7 +116,7 @@ export function AdvisorChat({ compact = false }: { compact?: boolean }) {
           </div>
         ))}
         {busy && (
-          <div className="flex items-center gap-2 text-xs text-muted-foreground"><Loader2 className="h-3.5 w-3.5 animate-spin" /> Thinking…</div>
+          <div className="flex items-center gap-2 text-xs text-muted-foreground"><Loader2 className="h-3.5 w-3.5 animate-spin" /> The Advisor is thinking…</div>
         )}
         <div ref={end} />
       </div>
@@ -147,7 +151,7 @@ export function AdvisorLauncher() {
       )}
       <button onClick={() => setOpen(!open)} aria-label={open ? "Close the Advisor" : "Open the Advisor"}
         className="fixed bottom-5 right-5 z-50 inline-flex h-14 items-center gap-2 rounded-full bg-primary px-5 font-medium text-primary-foreground shadow-[0_10px_30px_-8px_oklch(0.55_0.1_190/60%)] transition hover:brightness-105">
-        {open ? <X className="h-5 w-5" /> : <Bot className="h-5 w-5" />}
+        {open ? <X className="h-5 w-5" /> : <span className="-my-2 -ml-2 grid h-10 w-10 place-items-center rounded-full bg-card"><Robot size={34} wave={false} /></span>}
         <span className="hidden sm:inline">{open ? "Close" : "Ask the Advisor"}</span>
       </button>
     </>
