@@ -28,7 +28,6 @@ const PRESETS: Record<string, string> = {
 const STAKEHOLDERS = ["International patients", "Canadian patients", "Private clinics", "Public hospitals", "Surgeons and nurses", "Provincial governments", "Federal government", "Hotels and tourism"];
 
 function Simulator() {
-  const [tab, setTab] = useState<"impact" | "risk">("impact");
   const run = simulatePolicy;
   const [preset, setPreset] = useState("Full strategy");
   const [policy, setPolicy] = useState(PRESETS["Full strategy"]);
@@ -104,15 +103,10 @@ function Simulator() {
               <div className="rounded-xl bg-primary-soft p-5">
                 <p className="text-xs font-semibold uppercase tracking-widest text-primary">Verdict</p>
                 <p className="mt-1 font-display text-lg font-semibold">{res.verdict}</p>
+                <a href="#risks" className="mt-3 inline-flex items-center gap-1.5 rounded-md bg-card px-3 py-1.5 text-sm font-medium text-primary shadow-soft hover:brightness-95">
+                  See {res.register.length} risks &amp; mitigations ↓
+                </a>
               </div>
-              <div className="inline-flex gap-1 rounded-lg bg-muted p-1 text-sm" role="tablist">
-                {([["impact", "Stakeholder impact"], ["risk", `Risks & mitigations (${res.register.length})`]] as const).map(([id, label]) => (
-                  <button key={id} role="tab" aria-selected={tab === id} onClick={() => setTab(id)}
-                    className={`rounded-md px-3.5 py-1.5 ${tab === id ? "bg-card font-medium shadow-soft" : "text-muted-foreground hover:text-foreground"}`}>{label}</button>
-                ))}
-              </div>
-              {tab === "risk" && <RiskPanel register={res.register} />}
-              {tab === "impact" && (<>
               <div className="grid gap-6 xl:grid-cols-2">
                 <div className="rounded-xl border bg-card p-5 shadow-soft">
                   <h3 className="mb-2 text-sm font-semibold">Short vs long-term impact</h3>
@@ -149,6 +143,14 @@ function Simulator() {
                   </div>
                 ))}
               </div>
+              <section id="risks" className="space-y-4 rounded-2xl border-2 border-primary/20 bg-card p-5 shadow-soft">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-widest text-primary">Risks &amp; mitigations</p>
+                  <h2 className="mt-1 font-display text-xl font-bold">What could go wrong, and how we handle it</h2>
+                </div>
+                <RiskPanel register={res.register} />
+              </section>
+              <h2 className="pt-2 font-display text-xl font-bold">Stakeholder detail</h2>
               <div className="grid gap-4 md:grid-cols-2">
                 {res.impacts.map((i) => (
                   <div key={i.stakeholder} className="rounded-xl border bg-card p-5 text-sm shadow-soft">
@@ -162,7 +164,6 @@ function Simulator() {
                   </div>
                 ))}
               </div>
-              </>)}
             </>
           )}
         </div>
