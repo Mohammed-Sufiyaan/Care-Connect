@@ -10,6 +10,8 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdvisorRouteImport } from './routes/advisor'
+import { Route as CarerouteRouteImport } from './routes/careroute'
 import { Route as EconomicsRouteImport } from './routes/economics'
 import { Route as NetworkRouteImport } from './routes/network'
 import { Route as SimulatorRouteImport } from './routes/simulator'
@@ -18,6 +20,16 @@ import { Route as SourcesRouteImport } from './routes/sources'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdvisorRoute = AdvisorRouteImport.update({
+  id: '/advisor',
+  path: '/advisor',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CarerouteRoute = CarerouteRouteImport.update({
+  id: '/careroute',
+  path: '/careroute',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EconomicsRoute = EconomicsRouteImport.update({
@@ -43,6 +55,8 @@ const SourcesRoute = SourcesRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/advisor': typeof AdvisorRoute
+  '/careroute': typeof CarerouteRoute
   '/economics': typeof EconomicsRoute
   '/network': typeof NetworkRoute
   '/simulator': typeof SimulatorRoute
@@ -50,6 +64,8 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/advisor': typeof AdvisorRoute
+  '/careroute': typeof CarerouteRoute
   '/economics': typeof EconomicsRoute
   '/network': typeof NetworkRoute
   '/simulator': typeof SimulatorRoute
@@ -58,6 +74,8 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/advisor': typeof AdvisorRoute
+  '/careroute': typeof CarerouteRoute
   '/economics': typeof EconomicsRoute
   '/network': typeof NetworkRoute
   '/simulator': typeof SimulatorRoute
@@ -65,14 +83,38 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/economics' | '/network' | '/simulator' | '/sources'
+  fullPaths:
+    | '/'
+    | '/advisor'
+    | '/careroute'
+    | '/economics'
+    | '/network'
+    | '/simulator'
+    | '/sources'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/economics' | '/network' | '/simulator' | '/sources'
-  id: '__root__' | '/' | '/economics' | '/network' | '/simulator' | '/sources'
+  to:
+    | '/'
+    | '/advisor'
+    | '/careroute'
+    | '/economics'
+    | '/network'
+    | '/simulator'
+    | '/sources'
+  id:
+    | '__root__'
+    | '/'
+    | '/advisor'
+    | '/careroute'
+    | '/economics'
+    | '/network'
+    | '/simulator'
+    | '/sources'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdvisorRoute: typeof AdvisorRoute
+  CarerouteRoute: typeof CarerouteRoute
   EconomicsRoute: typeof EconomicsRoute
   NetworkRoute: typeof NetworkRoute
   SimulatorRoute: typeof SimulatorRoute
@@ -86,6 +128,20 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/advisor': {
+      id: '/advisor'
+      path: '/advisor'
+      fullPath: '/advisor'
+      preLoaderRoute: typeof AdvisorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/careroute': {
+      id: '/careroute'
+      path: '/careroute'
+      fullPath: '/careroute'
+      preLoaderRoute: typeof CarerouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/economics': {
@@ -121,6 +177,8 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdvisorRoute: AdvisorRoute,
+  CarerouteRoute: CarerouteRoute,
   EconomicsRoute: EconomicsRoute,
   NetworkRoute: NetworkRoute,
   SimulatorRoute: SimulatorRoute,

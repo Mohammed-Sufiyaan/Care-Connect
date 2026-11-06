@@ -9,6 +9,8 @@ import {
 } from "@tanstack/react-router";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
+import { useLocation } from "@tanstack/react-router";
+import { AdvisorLauncher } from "@/components/advisor-chat";
 
 function NotFoundComponent() {
   return (
@@ -63,16 +65,19 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 });
 
 const NAV = [
-  { to: "/", label: "Strategy" },
+  { to: "/", label: "Home" },
   { to: "/network", label: "Network Map" },
-  { to: "/simulator", label: "Policy Simulator" },
-  { to: "/economics", label: "Economic Model" },
+  { to: "/careroute", label: "CareRoute" },
+  { to: "/simulator", label: "Simulator" },
+  { to: "/economics", label: "Economics" },
+  { to: "/advisor", label: "AI Advisor" },
   { to: "/sources", label: "Sources" },
 ] as const;
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const [open, setOpen] = useState(false);
+  const { pathname } = useLocation();
   return (
     <QueryClientProvider client={queryClient}>
       <HeadContent />
@@ -83,12 +88,12 @@ function RootComponent() {
               <span className="grid h-7 w-7 place-items-center rounded-md bg-primary text-xs text-primary-foreground">CC</span>
               Canada CareConnect
             </Link>
-            <nav className="hidden gap-1 md:flex">
+            <nav className="hidden gap-0.5 lg:flex">
               {NAV.map((n) => (
                 <Link
                   key={n.to}
                   to={n.to}
-                  className="rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+                  className="rounded-md px-2.5 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
                   activeProps={{ className: "bg-primary-soft !text-accent-foreground font-medium" }}
                   activeOptions={{ exact: true }}
                 >
@@ -96,12 +101,12 @@ function RootComponent() {
                 </Link>
               ))}
             </nav>
-            <button className="md:hidden" onClick={() => setOpen(!open)} aria-label="Menu">
+            <button className="lg:hidden" onClick={() => setOpen(!open)} aria-label="Menu">
               {open ? <X /> : <Menu />}
             </button>
           </div>
           {open && (
-            <nav className="flex flex-col border-t px-5 py-2 md:hidden">
+            <nav className="flex flex-col border-t px-5 py-2 lg:hidden">
               {NAV.map((n) => (
                 <Link key={n.to} to={n.to} onClick={() => setOpen(false)} className="py-2 text-sm">
                   {n.label}
@@ -120,6 +125,7 @@ function RootComponent() {
           </p>
         </footer>
       </div>
+      {!pathname.endsWith("/advisor") && <AdvisorLauncher />}
     </QueryClientProvider>
   );
 }
